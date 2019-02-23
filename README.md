@@ -19,11 +19,11 @@ The built application can be seen here: https://oakmac.com/react-state-examples/
 - Static component
 - Adjustable number of paragraphs
 - a basic Login Form
-- editable list of people (TODO: unfinished)
+- editable list of fun people
 
 ## Development Setup
 
-Install [shadow-cljs], then `shadow-cljs build app`
+Install [shadow-cljs], then `shadow-cljs release app`
 
 [shadow-cljs]:http://shadow-cljs.org/
 

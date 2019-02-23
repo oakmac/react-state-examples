@@ -2,3 +2,4 @@ node_modules/
 .nrepl-port
 .shadow-cljs
 public/js/
+*.diff

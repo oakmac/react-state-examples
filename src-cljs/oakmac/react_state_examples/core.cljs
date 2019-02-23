@@ -2,7 +2,7 @@
   (:require
     [clojure.string :as str]
     [goog.functions :as gfunctions]
-    [oakmac.react-forms-example.names :as names]
+    [oakmac.react-state-examples.fun-people :as fun-people]
     [oops.core :refer [ocall oget oset!]]
     [re-frame.core :as rf]
     [reagent.core :as reagent]
@@ -10,7 +10,6 @@
 
 ;; -----------------------------------------------------------------------------
 ;; App Db
-
 
 (def initial-login-form
   {:error-msg nil
@@ -20,18 +19,18 @@
    :username ""
    :logged-in? false})
 
+(def initial-fun-people
+   [{:name "Bill" :reason "he likes to party"}
+    {:name "Billy" :reason "he parties harder than Bill"}
+    {:name "William" :reason "he doesn't party at all"}])
 
 (def initial-db-state
   {:tab :hello-react
    :login-form initial-login-form
-   :names [{:name "Bill" :reason "he likes to party"}
-           {:name "Billy" :reason "he parties harder than Bill"}
-           {:name "William" :reason "he doesn't party at all"}]
+   :fun-people initial-fun-people
    :lorem-ipsum 2
    :reason-field ""
    :name-field ""})
-
-
 
 ;; -----------------------------------------------------------------------------
 ;; Events
@@ -198,6 +197,16 @@
     [:p "React makes it painless to create interactive UIs. Design simple views for each state in your application, and React will efficiently update and render just the right components when your data changes."]
     [:p "Declarative views make your code more predictable and easier to debug."]])
 
+
+
+
+
+
+
+
+
+
+;; TODO: clock component
 (defn Clock []
   [:section.content
     [:h1.title "Clock"]
@@ -351,7 +360,7 @@
         ;       :label "Clock"
         ;       :kwd :clock}]]]))
         [Tab {:active? (= current-tab :names)
-              :label "Names"
+              :label "Fun People"
               :kwd :names}]]]))
 
 (defn App
@@ -365,13 +374,13 @@
           :lorem-ipsum [LoremIpsum]
           :hello-react [HelloReact]
           :login-form [LoginFormPage]
-          :names [names/Names]
+          :names [fun-people/FunPeople]
           nil)]]))
 
 ;; -----------------------------------------------------------------------------
 ;; Init
 
-(def app-container-el (js/document.getElementById "appContainer"))
+(def app-container-el (js/document.getElementById "root"))
 
 (defn re-render
   "Forces a Reagent re-render of all components.
