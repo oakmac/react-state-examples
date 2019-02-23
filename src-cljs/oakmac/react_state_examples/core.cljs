@@ -75,25 +75,6 @@
 
 
 
-(rf/reg-event-db
-  :update-name-field
-  (fn [db [_ name]]
-    (assoc db :name-field name)))
-
-(rf/reg-event-db
-  :update-reason-field
-  (fn [db [_ reason]]
-    (assoc db :reason-field reason)))
-
-(rf/reg-event-db
-  :add-fun-person
-  (fn [db [_ reason]]
-    (let [new-fun-person {:name (:name-field db)
-                          :reason (:reason-field db)}]
-      (-> db
-          (update-in [:names] conj new-fun-person)
-          (assoc :name-field ""
-                 :reason-field "")))))
 
 
 
@@ -173,20 +154,6 @@
   (fn [db _]
     (:login-form db)))
 
-(rf/reg-sub
-  :names
-  (fn [db _]
-    (:names db)))
-
-(rf/reg-sub
-  :name-field
-  (fn [db _]
-    (:name-field db)))
-
-(rf/reg-sub
-  :reason-field
-  (fn [db _]
-    (:reason-field db)))
 
 ;; -----------------------------------------------------------------------------
 ;; Views
