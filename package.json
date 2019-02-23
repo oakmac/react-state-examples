@@ -1,0 +1,20 @@
+{
+  "name": "react-state-examples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chris Oakman <chris@oakmac.com> (http://chrisoakman.com/)",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:oakmac/react-state-examples.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "create-react-class": "15.6.3",
+    "react": "16.7.0",
+    "react-dom": "16.7.0"
+  }
+}
