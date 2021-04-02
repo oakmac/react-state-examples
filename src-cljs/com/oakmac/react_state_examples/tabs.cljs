@@ -6,18 +6,25 @@
 ;; -----------------------------------------------------------------------------
 ;; Events
 
+(def initial-active-tab-id "TAB_HELLO_REACT")
+
+(rf/reg-event-db
+  ::init
+  (fn [db _]
+    (assoc db ::active-tab-id initial-active-tab-id)))
+
 (rf/reg-event-db
   ::set-active-tab
   (fn [db [_ tab-id]]
-    (assoc db :active-tab-id tab-id)))
+    (assoc db ::active-tab-id tab-id)))
 
 ;; -----------------------------------------------------------------------------
 ;; Subscriptions
 
 (rf/reg-sub
-  :active-tab-id
+  ::active-tab-id
   (fn [db _]
-    (:active-tab-id db)))
+    (::active-tab-id db)))
 
 ;; -----------------------------------------------------------------------------
 ;; Views
@@ -28,7 +35,7 @@
     [:a label]])
 
 (defn Tabs []
-  (let [active-tab-id @(rf/subscribe [:active-tab-id])]
+  (let [active-tab-id @(rf/subscribe [::active-tab-id])]
     [:div.tabs.is-boxed.is-medium
       [:ul
         [Tab {:active? (= active-tab-id "TAB_HELLO_REACT")

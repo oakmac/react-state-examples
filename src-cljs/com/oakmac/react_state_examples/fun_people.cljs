@@ -1,13 +1,11 @@
 (ns com.oakmac.react-state-examples.fun-people
   (:require
     [clojure.string :as str]
+    [goog.dom :as gdom]
     [oops.core :refer [ocall oget oset!]]
     [re-frame.core :as rf]
     [reagent.core :as reagent]
     [taoensso.timbre :as timbre]))
-
-(defn- by-id [id]
-  (js/document.getElementById id))
 
 ;; -----------------------------------------------------------------------------
 ;; Events
@@ -87,7 +85,7 @@
         [:form {:on-submit (fn [js-evt]
                              (ocall js-evt "preventDefault")
                              (rf/dispatch [:add-fun-person])
-                             (ocall (by-id "nameInput") "focus"))}
+                             (ocall (gdom/getElement "nameInput") "focus"))}
           [:div.field
             [:label.label "Name"]
             [:div.control

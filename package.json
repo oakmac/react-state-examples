@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Example stateful UI components using React",
   "author": "Chris Oakman <chris@oakmac.com> (http://chrisoakman.com/)",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:oakmac/react-state-examples.git"

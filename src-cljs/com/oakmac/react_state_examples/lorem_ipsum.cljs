@@ -6,6 +6,13 @@
 ;; -----------------------------------------------------------------------------
 ;; Events
 
+(def default-num-paragraphs 1)
+
+(rf/reg-event-db
+  ::init
+  (fn [db _]
+    (assoc db ::num-paragraphs default-num-paragraphs)))
+
 (rf/reg-event-db
   ::add-paragraph
   (fn [db _]
@@ -23,7 +30,7 @@
 (rf/reg-sub
   ::num-paragraphs
   (fn [db _]
-    (::num-paragraphs db 0)))
+    (::num-paragraphs db)))
 
 ;; -----------------------------------------------------------------------------
 ;; Views
