@@ -1,4 +1,4 @@
-(ns oakmac.react-state-examples.fun-people
+(ns com.oakmac.react-state-examples.fun-people
   (:require
     [clojure.string :as str]
     [oops.core :refer [ocall oget oset!]]

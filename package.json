@@ -1,20 +1,19 @@
 {
   "name": "react-state-examples",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "description": "Example stateful UI components using React",
   "author": "Chris Oakman <chris@oakmac.com> (http://chrisoakman.com/)",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:oakmac/react-state-examples.git"
   },
   "license": "ISC",
   "dependencies": {
-    "create-react-class": "15.6.3",
-    "react": "16.7.0",
-    "react-dom": "16.7.0"
+    "react": "17.0.1",
+    "react-dom": "17.0.1"
+  },
+  "devDependencies": {
+    "shadow-cljs": "2.11.20"
   }
 }

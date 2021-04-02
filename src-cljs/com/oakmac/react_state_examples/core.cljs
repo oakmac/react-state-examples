@@ -1,11 +1,14 @@
-(ns oakmac.react-state-examples.core
+(ns com.oakmac.react-state-examples.core
   (:require
     [clojure.string :as str]
+    [com.oakmac.react-state-examples.fun-people :as fun-people]
+    [com.oakmac.react-state-examples.tabs :refer [Tabs]]
+    [com.oakmac.react-state-examples.lorem-ipsum :refer [LoremIpsum]]
+    [goog.dom :as gdom]
     [goog.functions :as gfunctions]
-    [oakmac.react-state-examples.fun-people :as fun-people]
-    [oops.core :refer [ocall oget oset!]]
+    [oops.core :refer [ocall oget]]
     [re-frame.core :as rf]
-    [reagent.core :as reagent]
+    [reagent.dom :as rdom]
     [taoensso.timbre :as timbre]))
 
 ;; -----------------------------------------------------------------------------
@@ -25,7 +28,7 @@
     {:name "William" :reason "he doesn't party at all"}])
 
 (def initial-db-state
-  {:tab :hello-react
+  {:active-tab-id "TAB_HELLO_REACT"
    :login-form initial-login-form
    :fun-people initial-fun-people
    :lorem-ipsum 2
@@ -40,30 +43,6 @@
   (fn [_ _]
     initial-db-state))
 
-(rf/reg-event-db
-  :update-tab
-  (fn [db [_ new-tab]]
-    (assoc db :tab new-tab)))
-
-
-
-
-
-
-(rf/reg-event-db
-  :add-paragraph
-  (fn [db [_ new-tab]]
-    (update-in db [:lorem-ipsum] inc)))
-
-(defn dec-not-zero [n]
-  (if (zero? n)
-    n
-    (dec n)))
-
-(rf/reg-event-db
-  :remove-paragraph
-  (fn [db [_ new-tab]]
-    (update-in db [:lorem-ipsum] dec-not-zero)))
 
 
 
@@ -144,10 +123,7 @@
   (fn [db _]
     (:tab db)))
 
-(rf/reg-sub
-  :lorem-ipsum
-  (fn [db _]
-    (:lorem-ipsum db)))
+
 
 (rf/reg-sub
   :login-form
@@ -276,23 +252,6 @@
 
 
 
-(def lorem-ipsum "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus faucibus at magna sit amet tristique. Suspendisse ut varius dui, tincidunt semper sapien. Nullam bibendum eros lectus, eu posuere velit ultrices sed. Proin consectetur lacus nec metus ullamcorper, ac tempus felis eleifend. Donec eu euismod nisl. Morbi fringilla justo sit amet blandit dictum. Fusce sollicitudin ipsum ut mauris posuere pharetra. Praesent vitae elit nec ex placerat faucibus a in diam. Sed bibendum sit amet dui at facilisis. Vivamus vitae felis lacinia, gravida lectus id, placerat ipsum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer feugiat, sem in interdum tempor, nisi enim mollis nibh, luctus laoreet massa ligula nec ex. ")
-
-(defn LoremIpsum []
-  (let [num-paragraphs @(rf/subscribe [:lorem-ipsum])]
-    [:section.content
-
-      [:h1.title "Number of Lorem Ipsum paragraphs: " num-paragraphs]
-      [:div.buttons
-        [:button.button.is-info.is-medium
-          {:on-click #(rf/dispatch [:add-paragraph])}
-          "Add Paragraph"]
-        [:button.button.is-info.is-medium
-          {:on-click #(rf/dispatch [:remove-paragraph])}
-          "Remove Paragraph"]]
-      [:div.content
-        (for [x (range num-paragraphs)]
-          [:p {:key x} lorem-ipsum])]]))
 
 
 
@@ -305,62 +264,43 @@
 
 
 
-(defn Tab [{:keys [active? label kwd]}]
-  [:li {:class (when active? "is-active")
-        :on-click #(rf/dispatch [:update-tab kwd])}
-    [:a label]])
 
-(defn Tabs []
-  (let [current-tab @(rf/subscribe [:tab])]
-    [:div.tabs.is-boxed.is-medium
-      [:ul
-        [Tab {:active? (= current-tab :hello-react)
-              :label "Hello React"
-              :kwd :hello-react}]
-        [Tab {:active? (= current-tab :lorem-ipsum)
-              :label "Lorem Ipsum"
-              :kwd :lorem-ipsum}]
-        [Tab {:active? (= current-tab :login-form)
-              :label "Login Form"
-              :kwd :login-form}]
-        ; [Tab {:active? (= current-tab :clock)
-        ;       :label "Clock"
-        ;       :kwd :clock}]]]))
-        [Tab {:active? (= current-tab :names)
-              :label "Fun People"
-              :kwd :names}]]]))
+
+
+
+
 
 (defn App
+  "the Root component"
   []
-  (let [current-tab @(rf/subscribe [:tab])]
+  (let [active-tab-id @(rf/subscribe [:active-tab-id])]
     [:section.section
       [:div.container
         [Tabs]
-        (case current-tab
-          :clock [Clock]
-          :lorem-ipsum [LoremIpsum]
-          :hello-react [HelloReact]
-          :login-form [LoginFormPage]
-          :names [fun-people/FunPeople]
-          nil)]]))
+        (case active-tab-id
+          "TAB_HELLO_REACT" [HelloReact]
+          "TAB_LOREM_IPSUM" [LoremIpsum]
+          "TAB_CLOCK" [Clock]
+          "TAB_LOGIN_FORM" [LoginFormPage]
+          "TAB_FUN_PEOPLE" [fun-people/FunPeople]
+          (timbre/warn "Unknown tab-id:" active-tab-id))]]))
 
 ;; -----------------------------------------------------------------------------
-;; Init
+;; Global Init
 
-(def app-container-el (js/document.getElementById "root"))
+(def app-container-el (gdom/getElement "root"))
 
-(defn re-render
+(defn on-refresh
   "Forces a Reagent re-render of all components.
    NOTE: this function is called after every shadow-cljs hot module reload"
   []
-  (reagent/force-update-all))
+  (rf/clear-subscription-cache!)
+  (rdom/force-update-all))
 
 (def init!
   (gfunctions/once
     (fn []
       (rf/dispatch-sync [:init])
-      (when-not (str/blank? (:master-password initial-db-state))
-        (rf/dispatch [:submit-master-password]))
-      (reagent/render [App] app-container-el))))
+      (rdom/render [(var App)] app-container-el))))
 
 (init!)
