@@ -2,6 +2,7 @@
   (:require
     [clojure.string :as str]
     [re-frame.core :as rf]
+    [re-frame.interceptor :as interceptor]
     [re-frame.std-interceptors :as std-interceptors]
     [taoensso.timbre :as timbre]))
 
@@ -15,31 +16,25 @@
   (fn [db _]
     (assoc db ::active-tab-id initial-active-tab-id)))
 
+;; NOTE: could also check this via schema or regex
+(defn- valid-tab-id? [id]
+  (and (string? id)
+       (str/starts-with? id "TAB_")))
 
-
-
-
-; (defn- valid-tab-id? [id]
-;   (and (string? id)
-;        (str/starts-with? id "TAB_")))
-;
-; (def my-first-interceptor
-;   {:id :verify-tab-id
-;    :after (fn [context]
-;             (let [app-db (get-in context [:coeffects :db])
-;                   new-tab-id (::active-tab-id app-db)]
-;               (when-not (valid-tab-id? new-tab-id)
-;                 (timbre/warn "Uh-oh! Invalid tab-id found in app-db:" new-tab-id))
-;               context))
-;    :before nil})
-
-
-
-
+(def check-tab-id
+  (interceptor/->interceptor
+    :id :check-tab-id
+    :before (fn [context]
+              (when ^boolean goog.DEBUG
+                (let [event (get-in context [:coeffects :event])
+                      new-tab-id (nth event 1)]
+                  (when-not (valid-tab-id? new-tab-id)
+                    (timbre/warn "Uh-oh! Bad tab-id:" new-tab-id))))
+              context)))
 
 (rf/reg-event-db
   ::set-active-tab
-  ; [my-first-interceptor]
+  [check-tab-id] ;; <-- small interceptor to check the tab-id value
   (fn [db [_ tab-id]]
     (assoc db ::active-tab-id tab-id)))
 
@@ -78,4 +73,7 @@
         ;       :id "TAB_CLOCK"}]
         [Tab {:active? (= active-tab-id "TAB_FUN_PEOPLE")
               :label "Fun People"
-              :id "TAB_FUN_PEOPLE"}]]]))
+              :id "TAB_FUN_PEOPLE"}]
+        [Tab {:active? (= active-tab-id :invalid-tab-id)
+              :label "Invalid Tab"
+              :id :invalid-tab-id}]]]))

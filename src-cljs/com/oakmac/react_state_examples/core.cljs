@@ -11,9 +11,12 @@
 
 (def schema-watchdog
   (rf/->interceptor
-    :id    :app-db-schema-validator
+    :id    :schema-watchdog
     :after (fn [context]
-             (let [app-db (get-in context [:coeffects :db])]
+             ;; Possible usage for a global interceptor:
+             ;; if the new app-db does not match the schema,
+             ;; then restore the previous app-db and yell at the developer
+             (let [app-db (get-in context [:effects :db])]
                (check-app-db-schema app-db))
              context)))
 
@@ -29,11 +32,10 @@
 (def init!
   (gfunctions/once
     (fn []
-
+      ;; only add this global interceptor if we are in development mode
+      ;; ie: this code will not be included in Google Closure Compiler Advanced Mode
       (when ^boolean goog.DEBUG
-        ; (timbre/info "Hello from DEBUG world!"))
         (re-frame.core/reg-global-interceptor schema-watchdog))
-
       (timbre/info "Initializing React UI Examples")
       (rf/dispatch-sync [:global-init])
       (rdom/render [(var App)] app-container-el))))

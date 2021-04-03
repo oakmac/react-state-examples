@@ -21,6 +21,10 @@
 (rf/reg-event-db
   ::remove-paragraph
   (fn [db _]
+    ;; for testing our schema: allow negative number of paragraphs
+    ; (update db ::num-paragraphs dec)
+
+    ;; "normal" logic does not allow negative paragraphs
     (update db ::num-paragraphs (fn [n]
                                   (if (zero? n) 0 (dec n))))))
 
