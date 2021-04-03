@@ -39,9 +39,9 @@
   (fn [_ _]
     {:db initial-app-db
      :fx [[:dispatch [::tabs/init]]
-          [:dispatch [::lorem-ipsum/init]]
-          [:dispatch [::login-form/init]]
-          [:dispatch [::fun-people/init]]]}))
+          [:dispatch [::lorem-ipsum/init]]]}))
+          ; [:dispatch [::login-form/init]]
+          ; [:dispatch [::fun-people/init]]]}))
 
 ;; TODO: clock component
 ; (defn Clock []

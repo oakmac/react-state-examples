@@ -3,6 +3,7 @@
  :dependencies
  [[binaryage/oops "0.7.0"]
   [com.taoensso/timbre "5.1.2"]
+  [metosin/malli "0.4.0"]
   [re-frame "1.2.0"]
   [reagent "1.0.0"]]
 

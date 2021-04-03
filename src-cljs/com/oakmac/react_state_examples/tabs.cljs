@@ -1,6 +1,8 @@
 (ns com.oakmac.react-state-examples.tabs
   (:require
+    [clojure.string :as str]
     [re-frame.core :as rf]
+    [re-frame.std-interceptors :as std-interceptors]
     [taoensso.timbre :as timbre]))
 
 ;; -----------------------------------------------------------------------------
@@ -13,8 +15,31 @@
   (fn [db _]
     (assoc db ::active-tab-id initial-active-tab-id)))
 
+
+
+
+
+; (defn- valid-tab-id? [id]
+;   (and (string? id)
+;        (str/starts-with? id "TAB_")))
+;
+; (def my-first-interceptor
+;   {:id :verify-tab-id
+;    :after (fn [context]
+;             (let [app-db (get-in context [:coeffects :db])
+;                   new-tab-id (::active-tab-id app-db)]
+;               (when-not (valid-tab-id? new-tab-id)
+;                 (timbre/warn "Uh-oh! Invalid tab-id found in app-db:" new-tab-id))
+;               context))
+;    :before nil})
+
+
+
+
+
 (rf/reg-event-db
   ::set-active-tab
+  ; [my-first-interceptor]
   (fn [db [_ tab-id]]
     (assoc db ::active-tab-id tab-id)))
 
